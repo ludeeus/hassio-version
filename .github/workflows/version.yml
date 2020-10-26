@@ -27,7 +27,7 @@ jobs:
   upload:
     name: Upload
     needs: lint
-    if: github.github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
