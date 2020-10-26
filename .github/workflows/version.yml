@@ -53,21 +53,16 @@ jobs:
         aws s3 sync . s3://hassio-version --exclude "*" --include "*.json" --include "*.txt"
         aws s3 sync . s3://version.home-assistant.io --exclude "*" --include "*.json" --include "*.txt"
 
-    - name: Gather files for cache flush
-      id: flush
+    - name: Flush CloudFlare cache
       run: |
         declare -a files
         for file in ${{ steps.changed_files.outputs.all }}; do
           if [[ "$file" == *.txt ]] || [[ "$file" == *.json ]]; then
-            files+=("\"https:\/\/version.home-assistant.io\/$file\", ")
+            files+=("\"https://version.home-assistant.io/$file\", ")
           fi
         done
-        echo "::set-output name=files::[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
-
-    - name: Flush CloudFlare cache
-      run: |
         curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
           -H "X-Auth-Email: ${{ secrets.CF_EMAIL }}" \
           -H "X-Auth-Key: ${{ secrets.CF_AUTHKEY }}" \
           -H "Content-Type: application/json" \
-          --data '{"files": ${{ steps.flush.outputs.files }}}'
+          --data '{"files": [$(echo ${files[@]} | rev | cut -c 2- | rev)]}'
