@@ -61,6 +61,7 @@ jobs:
             files+=("\"https://version.home-assistant.io/$file\", ")
           fi
         done
+        echo "Files: [$(echo ${files[@]} | rev | cut -c 2- | rev)]"
         curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
           -H "X-Auth-Email: ${{ secrets.CF_EMAIL }}" \
           -H "X-Auth-Key: ${{ secrets.CF_AUTHKEY }}" \
