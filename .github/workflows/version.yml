@@ -69,7 +69,7 @@ jobs:
         files=${{ steps.flush.outputs.files }}
         echo '{"files": $files}'
         curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
-        -H "X-Auth-Email: ${{ secrets.CF_EMAIL }}" \
-        -H "X-Auth-Key: ${{ secrets.CF_AUTHKEY }" \
-        -H "Content-Type: application/json" \
-        --data '{"files": $files}'
+          -H "X-Auth-Email: ${{ secrets.CF_EMAIL }}" \
+          -H "X-Auth-Key: ${{ secrets.CF_AUTHKEY }}" \
+          -H "Content-Type: application/json" \
+          --data '{"files": $files}'
