@@ -66,8 +66,8 @@ jobs:
           fi
         done
         output="[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
-        echo "$output"
-        echo "::set-output name=files::$output"
+        echo "${output}"
+        echo "::set-output name=files::${output}"
 
     - name: Flush CloudFlare cache
       run: |
