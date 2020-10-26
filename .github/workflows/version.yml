@@ -26,7 +26,7 @@ jobs:
 
   upload:
     name: Upload
-    needs: lint
+    #needs: lint
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
@@ -42,6 +42,7 @@ jobs:
       uses: jitterbit/get-changed-files@v1
 
     - name: Install AWS CLI
+      if: github.github.ref == env.BRANCH_CONDITION
       run: pip install awscli
 
     - name: Upload files
@@ -59,7 +60,7 @@ jobs:
         declare -a files
         for file in ${{ steps.changed_files.outputs.all }}; do
           if [[ "$file" == *.txt ]] || [[ "$file" == *.json ]]; then
-            files+=("\"https://version.home-assistant.io\/$file\", ")
+            files+=("\"https://version.home-assistant.io/$file\", ")
           fi
         done
         output="[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
@@ -68,7 +69,7 @@ jobs:
 
     - name: Flush CloudFlare cache
       run: |
-        echo "{{ steps.flush.outputs.files }}"
+        echo "${{ steps.flush.outputs.files }}"
         curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
           -H "X-Auth-Email: ${{ secrets.CF_EMAIL }}" \
           -H "X-Auth-Key: ${{ secrets.CF_AUTHKEY }}" \
