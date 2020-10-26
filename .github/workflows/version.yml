@@ -56,6 +56,7 @@ jobs:
 
     - name: Gather files for cache flush
       id: flush
+      shell: bash
       run: |
         baseurl="https://version.home-assistant.io"
         declare -a files
@@ -70,6 +71,7 @@ jobs:
         echo "::set-output name=files::${output}"
 
     - name: Flush CloudFlare cache
+      shell: bash
       run: |
         echo "${{ steps.flush.outputs.files }}"
         curl --silent --show-error --fail -X POST \
