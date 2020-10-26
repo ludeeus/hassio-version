@@ -26,7 +26,8 @@ jobs:
 
   upload:
     name: Upload
-    #needs: lint
+    needs: lint
+    #if: github.github.ref == env.BRANCH_CONDITION
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
@@ -63,7 +64,7 @@ jobs:
             files+=("\"https:\/\/version.home-assistant.io\/$file\", ")
           fi
         done
-        echo "::set-output name=files::[$(echo ${files[#]} | rev | cut -c 2- | rev)]"
+        echo "::set-output name=files::[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
 
     - name: Flush CloudFlare cache
       run: |
