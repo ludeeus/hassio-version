@@ -24,7 +24,7 @@ jobs:
     - name: Lint with JQ
       uses: home-assistant/actions/helpers/jq@master
 
-  lint:
+  upload:
     name: Upload
     needs: lint
     runs-on: ubuntu-latest
