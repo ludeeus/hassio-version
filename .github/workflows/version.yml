@@ -27,7 +27,6 @@ jobs:
   upload:
     name: Upload
     #needs: lint
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
     - name: Flush CloudFlare cache
