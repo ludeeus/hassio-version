@@ -31,8 +31,8 @@ jobs:
     steps:
     - name: Flush CloudFlare cache
       run: |
-        
-        curl --silent --show-error --fail -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/dns_records/${{ secrets.CF_RECORD }}" \
+
+        curl --silent --show-error --fail -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
             -H "Authorization: Bearer ${{ secrets.CF_TOKEN }}"\
             -H "Content-Type: application/json" \
-            --data '{"type":"TXT","name":"test","content":"\/tesst\/\/example.com","ttl":1,"proxied":false}'
+            --data '{"files": ["https:\/\/www.halfdecent.io\/cat.jpg","https:\/\/www.halfdecent.io\/dog.jpg"]}'
