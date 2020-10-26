@@ -57,10 +57,11 @@ jobs:
     - name: Gather files for cache flush
       id: flush
       run: |
+        baseurl="https://version.home-assistant.io"
         declare -a files
         for file in ${{ steps.changed_files.outputs.all }}; do
           if [[ "$file" == *.txt ]] || [[ "$file" == *.json ]]; then
-            files+=("\"https://version.home-assistant.io/$file\", ")
+            files+=("\"$baseurl/$file\", ")
           fi
         done
         output="[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
@@ -70,7 +71,8 @@ jobs:
     - name: Flush CloudFlare cache
       run: |
         echo "${{ steps.flush.outputs.files }}"
-        curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
+        curl --silent --show-error --fail -X POST \
+          "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
           -H "X-Auth-Email: ${{ secrets.CF_EMAIL }}" \
           -H "X-Auth-Key: ${{ secrets.CF_AUTHKEY }}" \
           -H "Content-Type: application/json" \
