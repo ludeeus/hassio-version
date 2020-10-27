@@ -29,10 +29,28 @@ jobs:
     #needs: lint
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+
+    - name: Get changed files
+      id: changed_files
+      uses: jitterbit/get-changed-files@v1
+
+    - name: Gather files for cache flush
+      id: flush
+      run: |
+        declare -a files
+        for file in ${{ steps.changed_files.outputs.all }}; do
+          if [[ "$file" == *.txt ]] || [[ "$file" == *.json ]]; then
+            files+=("\"https:\/\/halfdecent.io\/$file\", ")
+          fi
+        done
+        echo "::set-output name=files::[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
+
     - name: Flush CloudFlare cache
       run: |
-
-        curl --silent --show-error --fail -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
-            -H "Authorization: Bearer ${{ secrets.CF_TOKEN }}"\
-            -H "Content-Type: application/json" \
-            --data '{"files": ["https:\/\/www.halfdecent.io\/cat.jpg","https:\/\/www.halfdecent.io\/dog.jpg"]}'
+        curl --silent --show-error --fail -X POST \
+          "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE }}/purge_cache" \
+          -H "Authorization: Bearer ${{ secrets.CF_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"files": ${{ steps.flush.outputs.files }}}'
