@@ -42,7 +42,7 @@ jobs:
         declare -a files
         for file in ${{ steps.changed_files.outputs.all }}; do
           if [[ "$file" == *.txt ]] || [[ "$file" == *.json ]]; then
-            files+=("\"https:\/\/halfdecent.io\/$file\", ")
+            files+=("\"https:\/\/version.home-assistant.io\/$file\", ")
           fi
         done
         echo "::set-output name=files::[$(echo ${files[@]} | rev | cut -c 2- | rev)]"
